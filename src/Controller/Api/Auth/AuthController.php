@@ -7,6 +7,7 @@ use App\Controller\DTO\Auth\RegisterRequest;
 use App\Entity\User;
 use App\Service\Auth\LoginAuthService;
 use App\Service\Auth\RegisterAuthService;
+use App\Service\ValidationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +20,7 @@ final class AuthController extends AbstractController
 {
     public function __construct(
         private SerializerInterface $serializer,
-        private ValidatorInterface $validator,
+        private ValidationService $validationService,
         private LoginAuthService $loginAuthService,
         private RegisterAuthService $registerAuthService,
     ) {}
@@ -33,15 +34,9 @@ final class AuthController extends AbstractController
             'json'
         );
 
-        $errors = $this->validator->validate($loginRequest);
-
-        if (count($errors) > 0) {
-            $errorMessages = [];
-            foreach ($errors as $error) {
-                $errorMessages[$error->getPropertyPath()] = $error->getMessage();
-            }
-
-            return $this->json(['errors' => $errorMessages], Response::HTTP_BAD_REQUEST);
+        $errors = $this->validationService->validate($loginRequest);
+        if (!empty($errors)) {
+            return $this->json(['errors' => $errors], Response::HTTP_BAD_REQUEST);
         }
 
         try {
@@ -65,15 +60,9 @@ final class AuthController extends AbstractController
             'json'
         );
 
-        $errors = $this->validator->validate($registerRequest);
-
-        if (count($errors) > 0) {
-            $errorMessages = [];
-            foreach ($errors as $error) {
-                $errorMessages[$error->getPropertyPath()] = $error->getMessage();
-            }
-
-            return $this->json(['errors' => $errorMessages], Response::HTTP_BAD_REQUEST);
+        $errors = $this->validationService->validate($registerRequest);
+        if (!empty($errors)) {
+            return $this->json(['errors' => $errors], Response::HTTP_BAD_REQUEST);
         }
 
         try {
