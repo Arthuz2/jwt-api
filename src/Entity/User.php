@@ -41,10 +41,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Progress::class, mappedBy: 'user')]
     private Collection $progress;
 
-    public function __construct(string $name, string $email)
+    public function __construct()
     {
-        $this->name = $name;
-        $this->email = $email;
         $this->progress = new ArrayCollection();
         $this->created_at = new DateTimeImmutable();
     }
