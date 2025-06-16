@@ -14,8 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+#[Route('/auth', name: 'api_auth_')]
 final class AuthController extends AbstractController
 {
     public function __construct(
@@ -25,7 +25,7 @@ final class AuthController extends AbstractController
         private RegisterAuthService $registerAuthService,
     ) {}
 
-    #[Route('/auth/login', name: 'api_login', methods: ['POST'])]
+    #[Route('/login', name: 'login', methods: ['POST'])]
     public function login(Request $request): JsonResponse
     {
         $loginRequest = $this->serializer->deserialize(
@@ -47,11 +47,11 @@ final class AuthController extends AbstractController
 
             return $this->json($result);
         } catch (\Exception $e) {
-            return $this->json(['error' => $e->getMessage()], $e->getCode());
+            return $this->json(['error' => $e->getMessage()], status: $e->getCode());
         }
     }
 
-    #[Route('/auth/register', name: 'api_register', methods: ['POST'])]
+    #[Route('/register', name: 'register', methods: ['POST'])]
     public function register(Request $request)
     {
         $registerRequest = $this->serializer->deserialize(
@@ -78,7 +78,7 @@ final class AuthController extends AbstractController
         }
     }
 
-    #[Route('auth/me', name: 'api_me', methods: ['GET'])]
+    #[Route('/me', name: 'me', methods: ['GET'])]
     public function me(): JsonResponse
     {
         $user = $this->getUser();

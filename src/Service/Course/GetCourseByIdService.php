@@ -2,7 +2,7 @@
 
 namespace App\Service\Course;
 
-use App\Controller\Exception\CourseNotFindException;
+use App\Controller\Exception\Course\CourseNotFindException;
 use App\Repository\CourseRepository;
 use Symfony\Component\Uid\Uuid;
 

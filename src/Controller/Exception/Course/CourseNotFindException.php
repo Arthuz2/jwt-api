@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Exception;
+namespace App\Controller\Exception\Course;
 
 use Symfony\Component\HttpFoundation\Response;
 

@@ -8,6 +8,6 @@ class UserAlreadyExistsException extends \Exception
 {
   public function __construct()
   {
-    parent::__construct('user already exists with this email', Response::HTTP_CONFLICT);
+    return parent::__construct('user already exists with this email', Response::HTTP_CONFLICT);
   }
 }

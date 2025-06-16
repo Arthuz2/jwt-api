@@ -39,6 +39,7 @@ class Course
     public function __construct()
     {
         $this->lessons = new ArrayCollection();
+        $this->created_at = new \DateTimeImmutable();
     }
 
     public function getId(): ?Uuid
