@@ -22,6 +22,12 @@ class CourseRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
+    public function remove(Course $course): void
+    {
+        $this->getEntityManager()->remove($course);
+        $this->getEntityManager()->flush();
+    }
+
     //    /**
     //     * @return Course[] Returns an array of Course objects
     //     */
