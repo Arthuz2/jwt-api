@@ -5,6 +5,7 @@ namespace App\Service\Course;
 use App\Controller\Exception\Course\AlreadyExistCourseException;
 use App\Entity\Course;
 use App\Repository\CourseRepository;
+use App\Utils;
 
 class CreateCourseService
 {
@@ -27,7 +28,7 @@ class CreateCourseService
       'id' => $course->getId(),
       'title' => $course->getTitle(),
       'description' => $course->getDescription(),
-      'created_at' => $course->getCreatedAt()->format('Y-m-d H:i:s'),
+      'created_at' => Utils::formatDateTime($course->getCreatedAt()),
     ];
   }
 }

@@ -5,6 +5,7 @@ namespace App\Service\Course;
 use App\Controller\Exception\Course\AlreadyExistCourseException;
 use App\Controller\Exception\Course\CourseNotFindException;
 use App\Repository\CourseRepository;
+use App\Utils;
 use Symfony\Component\Uid\Uuid;
 
 class EditCourseService
@@ -37,7 +38,8 @@ class EditCourseService
       'id' => $course->getId(),
       'title' => $course->getTitle(),
       'description' => $course->getDescription(),
-      'createdAt' => $course->getCreatedAt(),
+      'lessons' => Utils::formatLessons($course->getLessons()->toArray()),
+      'createdAt' => Utils::formatDateTime($course->getCreatedAt()),
     ];
   }
 }

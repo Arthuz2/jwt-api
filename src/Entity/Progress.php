@@ -46,12 +46,12 @@ class Progress
         return $this;
     }
 
-    public function getLessonId(): ?Lesson
+    public function getLesson(): ?Lesson
     {
         return $this->lesson;
     }
 
-    public function setLessonId(?Lesson $lesson): static
+    public function setLesson(?Lesson $lesson): static
     {
         $this->lesson = $lesson;
 

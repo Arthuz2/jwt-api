@@ -4,6 +4,7 @@ namespace App\Service\Course;
 
 use App\Controller\Exception\Course\CourseNotFindException;
 use App\Repository\CourseRepository;
+use App\Utils;
 use Symfony\Component\Uid\Uuid;
 
 class GetCourseByIdService
@@ -24,8 +25,8 @@ class GetCourseByIdService
       'id' => $course->getId(),
       'title' => $course->getTitle(),
       'description' => $course->getDescription(),
-      'lessons' => $course->getLessons(),
-      'created_at' => $course->getCreatedAt()->format('Y-m-d H:i:s'),
+      'lessons' => Utils::formatLessons($course->getLessons()->toArray()),
+      'created_at' => Utils::formatDateTime($course->getCreatedAt()),
     ];
   }
 }

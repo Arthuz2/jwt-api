@@ -9,7 +9,7 @@ use Symfony\Component\Uid\Uuid;
 class RemoveCourseService
 {
   public function __construct(
-    private readonly CourseRepository $courseRepository
+    private readonly CourseRepository $courseRepository,
   ) {}
 
   public function execute(Uuid $id): array

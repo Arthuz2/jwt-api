@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\CustomIdGenerator;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: LessonRepository::class)]
@@ -19,25 +20,31 @@ class Lesson
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups('lesson')]
     private ?Uuid $id;
 
     #[ORM\ManyToOne(inversedBy: 'lessons')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('lesson')]
     private ?Course $course = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups('lesson')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups('lesson')]
     private ?string $content = null;
 
     #[ORM\Column]
+    #[Groups('lesson')]
     private ?int $position = null;
 
     /**
      * @var Collection<int, Progress>
      */
     #[ORM\OneToMany(targetEntity: Progress::class, mappedBy: 'lesson')]
+    #[Groups('lesson')]
     private Collection $progress;
 
     public function __construct()
@@ -50,12 +57,12 @@ class Lesson
         return $this->id;
     }
 
-    public function getCourseId(): ?Course
+    public function getCourse(): ?Course
     {
         return $this->course;
     }
 
-    public function setCourseId(?Course $course): static
+    public function setCourse(?Course $course): static
     {
         $this->course = $course;
 
@@ -110,7 +117,7 @@ class Lesson
     {
         if (!$this->progress->contains($progress)) {
             $this->progress->add($progress);
-            $progress->setLessonId($this);
+            $progress->setLesson($this);
         }
 
         return $this;
@@ -120,11 +127,23 @@ class Lesson
     {
         if ($this->progress->removeElement($progress)) {
             // set the owning side to null (unless already changed)
-            if ($progress->getLessonId() === $this) {
-                $progress->setLessonId(null);
+            if ($progress->getLesson() === $this) {
+                $progress->setLesson(null);
             }
         }
 
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'content' => $this->getContent(),
+            'position' => $this->getPosition(),
+            'progress' => $this->getProgress(),
+            'course' => $this->getCourse()->jsonSerialize(),
+        ];
     }
 }

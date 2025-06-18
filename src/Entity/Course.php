@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\CustomIdGenerator;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: CourseRepository::class)]
@@ -19,21 +20,26 @@ class Course
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups('course')]
     private ?Uuid $id;
 
     #[ORM\Column(length: 100)]
+    #[Groups('course')]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups('course')]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Groups('course')]
     private ?\DateTimeImmutable $created_at = null;
 
     /**
      * @var Collection<int, Lesson>
      */
     #[ORM\OneToMany(targetEntity: Lesson::class, mappedBy: 'course')]
+    #[Groups('course')]
     private Collection $lessons;
 
     public function __construct()
@@ -95,7 +101,7 @@ class Course
     {
         if (!$this->lessons->contains($lesson)) {
             $this->lessons->add($lesson);
-            $lesson->setCourseId($this);
+            $lesson->setCourse($this);
         }
 
         return $this;
@@ -105,11 +111,21 @@ class Course
     {
         if ($this->lessons->removeElement($lesson)) {
             // set the owning side to null (unless already changed)
-            if ($lesson->getCourseId() === $this) {
-                $lesson->setCourseId(null);
+            if ($lesson->getCourse() === $this) {
+                $lesson->setCourse(null);
             }
         }
 
         return $this;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'description' => $this->getDescription(),
+            'created_at' => $this->getCreatedAt()?->format('Y-m-d H:i:s'),
+        ];
     }
 }

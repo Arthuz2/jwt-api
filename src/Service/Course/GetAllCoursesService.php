@@ -3,6 +3,7 @@
 namespace App\Service\Course;
 
 use App\Repository\CourseRepository;
+use App\Utils;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,21 +25,33 @@ class GetAllCoursesService
       throw new \OutOfBoundsException('Page number exceeds total pages available.', Response::HTTP_BAD_REQUEST);
     }
 
+    foreach ($courses as $course) {
+      $lessons = array_map(function ($lesson) {
+        return [
+          'id' => $lesson->getId(),
+          'title' => $lesson->getTitle(),
+          'content' => $lesson->getContent(),
+          'position' => $lesson->getPosition(),
+        ];
+      }, $course->getLessons()->toArray());
+    }
+
     $data = array_map(function ($course) {
       return [
         'id' => $course->getId(),
         'title' => $course->getTitle(),
         'description' => $course->getDescription(),
-        'created_at' => $course->getCreatedAt()->format('Y-m-d H:i:s'),
+        'created_at' => Utils::formatDateTime($course->getCreatedAt()),
+        'lessons' => Utils::formatLessons($course->getLessons()->toArray()),
       ];
     }, $courses->getItems());
 
     return [
-      'courses' => $data,
       'total' => $courses->getTotalItemCount(),
       'page' => $page,
       'pages' => $numberOfPages,
-      'limit' => $courses->getItemNumberPerPage(),
+      'limitPerPage' => $courses->getItemNumberPerPage(),
+      'courses' => $data,
     ];
   }
 }

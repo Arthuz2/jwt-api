@@ -24,6 +24,12 @@ class CourseRepository extends ServiceEntityRepository
 
     public function remove(Course $course): void
     {
+        if (count($course->getLessons()) > 0) {
+            foreach ($course->getLessons() as $lesson) {
+                $course->removeLesson($lesson);
+            }
+        }
+
         $this->getEntityManager()->remove($course);
         $this->getEntityManager()->flush();
     }
