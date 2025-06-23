@@ -22,6 +22,7 @@ class Utils
         'title' => $lessons->getTitle(),
         'content' => $lessons->getContent(),
         'position' => $lessons->getPosition(),
+        'progress' => self::formatProgress($lessons->getProgress()->getValues()),
       ];
     }
 
@@ -31,6 +32,7 @@ class Utils
         'title' => $lesson->getTitle(),
         'content' => $lesson->getContent(),
         'position' => $lesson->getPosition(),
+        'progress' => self::formatProgress($lesson->getProgress()->getValues()),
       ];
     }, $lessons);
 

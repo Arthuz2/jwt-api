@@ -29,6 +29,10 @@ class CreateLessonService
       throw new PositionMustBeNonNegativeIntegerException();
     }
 
+    if (!$this->courseRepository->find($courseId)) {
+      throw new CourseNotFindException();
+    }
+
     if (
       $this->courseRepository->find($courseId)
       ->getLessons()

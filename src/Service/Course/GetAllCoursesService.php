@@ -17,6 +17,9 @@ class GetAllCoursesService
   public function execute(int $page): array
   {
     $courses = $this->courseRepository->findAll();
+    if (!$courses) {
+      return [];
+    }
 
     $courses = $this->paginator->paginate($courses, $page, 10);
 
