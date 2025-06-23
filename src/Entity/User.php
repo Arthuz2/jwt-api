@@ -12,6 +12,7 @@ use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -21,15 +22,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups('user')]
     private ?Uuid $id;
 
     #[ORM\Column(length: 100)]
+    #[Groups('user')]
     private ?string $name = null;
 
     #[ORM\Column(length: 30, unique: true)]
+    #[Groups('user')]
     private ?string $email = null;
 
     #[ORM\Column(type: 'json')]
+    #[Groups('user')]
     private array $roles = [];
 
     #[ORM\Column(length: 255)]
@@ -137,7 +142,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->progress->contains($progress)) {
             $this->progress->add($progress);
-            $progress->setUserId($this);
+            $progress->setUser($this);
         }
 
         return $this;
@@ -147,8 +152,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->progress->removeElement($progress)) {
             // set the owning side to null (unless already changed)
-            if ($progress->getUserId() === $this) {
-                $progress->setUserId(null);
+            if ($progress->getUser() === $this) {
+                $progress->setUser(null);
             }
         }
 

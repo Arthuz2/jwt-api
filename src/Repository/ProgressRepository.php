@@ -16,6 +16,14 @@ class ProgressRepository extends ServiceEntityRepository
         parent::__construct($registry, Progress::class);
     }
 
+    public function save(Progress $progress): Progress
+    {
+        $this->getEntityManager()->persist($progress);
+        $this->getEntityManager()->flush();
+
+        return $progress;
+    }
+
     //    /**
     //     * @return Progress[] Returns an array of Progress objects
     //     */

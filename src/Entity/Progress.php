@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\ProgressRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\CustomIdGenerator;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ProgressRepository::class)]
@@ -16,30 +18,39 @@ class Progress
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     #[ORM\GeneratedValue(strategy: "CUSTOM")]
     #[CustomIdGenerator(class: UuidGenerator::class)]
+    #[Groups('progress')]
     private ?Uuid $id;
 
     #[ORM\ManyToOne(inversedBy: 'progress')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('progress')]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'progress')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups('progress')]
     private ?Lesson $lesson = null;
 
     #[ORM\Column]
+    #[Groups('progress')]
     private ?\DateTimeImmutable $completed_at = null;
+
+    public function __construct()
+    {
+        $this->completed_at = new DateTimeImmutable();
+    }
 
     public function getId(): ?Uuid
     {
         return $this->id;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUserId(?User $user): static
+    public function setUser(?User $user): static
     {
         $this->user = $user;
 

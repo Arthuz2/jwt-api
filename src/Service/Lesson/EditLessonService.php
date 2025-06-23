@@ -102,7 +102,7 @@ class EditLessonService
       'content' => $lesson->getContent(),
       'position' => $lesson->getPosition(),
       'course' => Utils::formatCourse($lesson->getCourse()),
-      'progress' => $lesson->getProgress(), // Colocar depois: Utils::formatProgress($lesson->getProgress())
+      'progress' => Utils::formatProgress($lesson->getProgress())
     ];
   }
 }
